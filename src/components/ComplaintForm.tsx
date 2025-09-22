@@ -19,11 +19,17 @@ interface ComplaintFormProps {
 }
 
 export const ComplaintForm = ({ onSubmit, onCancel }: ComplaintFormProps) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    category: string;
+    priority: "low" | "medium" | "high";
+    submittedBy: string;
+  }>({
     title: "",
     description: "",
     category: "",
-    priority: "medium" as const,
+    priority: "medium",
     submittedBy: ""
   });
 

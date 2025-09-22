@@ -8,10 +8,6 @@ interface Toast {
   variant?: "default" | "destructive";
 }
 
-interface ToastState {
-  toasts: Toast[];
-}
-
 const ToastContext = React.createContext<{
   toasts: Toast[];
   addToast: (toast: Omit<Toast, 'id'>) => void;

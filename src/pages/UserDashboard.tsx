@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useFirebaseAuth";
-import { useFirebaseComplaints, FirebaseComplaint } from "../hooks/useFirebaseComplaints";
-import { AuthForm } from "../components/FirebaseAuth";
+import { useFirebaseComplaints } from "../hooks/useFirebaseComplaints";
 
 const UserDashboard = () => {
   const { currentUser, logout } = useAuth();
