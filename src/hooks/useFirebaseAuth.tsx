@@ -47,32 +47,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Create new user account
   const signup = async (email: string, password: string, name: string) => {
     try {
-      // Prevent admin email from registering
       if (email === ADMIN_EMAIL) {
         throw new Error("Admin accounts cannot be registered. Please use admin login.");
       }
-
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // Update user profile with display name
-      await updateProfile(user, {
-        displayName: name
-      });
-
-      // All registered users are regular users
+      await updateProfile(user, { displayName: name });
       const role = "user";
-
-      // Create user document in Firestore
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
         displayName: name,
-        role: role,
+        role,
         createdAt: new Date().toISOString(),
         lastLoginAt: new Date().toISOString()
       });
-
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.message?.includes('Failed to fetch') || error?.code === 'auth/network-request-failed') {
+        error.message = "Network error: unable to reach Firebase Auth service. Check your internet connection, VPN, firewall, or ad blocker.";
+      }
       throw error;
     }
   };
@@ -80,22 +72,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Sign in existing user
   const login = async (email: string, password: string) => {
     try {
-      // Check if this is an admin login attempt
       const isAdminLogin = email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
-      
       const { user } = await signInWithEmailAndPassword(auth, email, password);
-      
-      // Determine role based on admin credentials
       const role = isAdminLogin ? "admin" : "user";
-      
-      // Update user document with role and last login time
       const userDocRef = doc(db, "users", user.uid);
-      await setDoc(userDocRef, {
-        lastLoginAt: new Date().toISOString(),
-        role: role
-      }, { merge: true });
-
-    } catch (error) {
+      await setDoc(userDocRef, { lastLoginAt: new Date().toISOString(), role }, { merge: true });
+    } catch (error: any) {
+      if (error?.message?.includes('Failed to fetch') || error?.code === 'auth/network-request-failed') {
+        error.message = "Network error: unable to reach Firebase Auth service. Verify connectivity or disable interfering extensions.";
+      }
       throw error;
     }
   };

@@ -194,10 +194,9 @@ export const AuthForm = ({ onSuccess, onCancel, initialMode = "login" }: AuthFor
 interface ProtectedRouteProps {
   children: React.ReactNode;
   adminOnly?: boolean;
-  fallback?: React.ReactNode;
 }
 
-export const ProtectedRoute = ({ children, adminOnly = false, fallback }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ children, adminOnly = false }: ProtectedRouteProps) => {
   const { currentUser, isAdmin, loading } = useAuth();
 
   if (loading) {
@@ -212,14 +211,8 @@ export const ProtectedRoute = ({ children, adminOnly = false, fallback }: Protec
   }
 
   if (!currentUser) {
-    return fallback || (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Authentication Required</h2>
-          <p className="text-muted-foreground mb-6">Please sign in to access this page.</p>
-        </div>
-      </div>
-    );
+    window.location.href = '/login';
+    return null;
   }
 
   if (adminOnly && !isAdmin) {
@@ -236,5 +229,5 @@ export const ProtectedRoute = ({ children, adminOnly = false, fallback }: Protec
     );
   }
 
-  return <>{children}</>;
+  return <>{children}</>; 
 };

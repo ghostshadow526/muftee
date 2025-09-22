@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthForm } from "../components/FirebaseAuth";
 import { useAuth } from "../hooks/useFirebaseAuth";
 
 const Index = () => {
-  const [showAuth, setShowAuth] = useState(false);
-  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { currentUser, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
@@ -33,10 +30,6 @@ const Index = () => {
     }
   }, [currentUser, isAdmin, navigate]);
 
-  const handleAuthSuccess = () => {
-    setShowAuth(false);
-  };
-
   const handleLogout = async () => {
     try { await logout(); } catch (e) { console.error(e); }
   };
@@ -58,8 +51,9 @@ const Index = () => {
               </>
             ) : (
               <>
-                <button onClick={() => { setAuthMode('login'); setShowAuth(true); }} className="btn btn-outline !py-2 text-xs uppercase tracking-wide">Login</button>
-                <button onClick={() => { setAuthMode('signup'); setShowAuth(true); }} className="btn btn-primary !py-2 text-xs uppercase tracking-wide shadow-glow">Get Started</button>
+                <a href="/login" className="btn btn-outline !py-2 text-xs uppercase tracking-wide">Login</a>
+                <a href="/signup" className="btn btn-primary !py-2 text-xs uppercase tracking-wide shadow-glow">Get Started</a>
+                <a href="/admin-login" className="btn btn-ghost !py-2 text-xs uppercase tracking-wide">Admin</a>
               </>
             )}
           </div>
@@ -84,8 +78,8 @@ const Index = () => {
                   </p>
                   {!currentUser && (
                     <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
-                      <button onClick={() => { setAuthMode('signup'); setShowAuth(true); }} className="btn btn-primary shadow-glow px-8 py-4 text-base font-semibold">Create Account</button>
-                      <button onClick={() => { setAuthMode('login'); setShowAuth(true); }} className="btn btn-outline px-8 py-4 text-base font-semibold">Sign In</button>
+                      <a href="/signup" className="btn btn-primary shadow-glow px-8 py-4 text-base font-semibold">Create Account</a>
+                      <a href="/login" className="btn btn-outline px-8 py-4 text-base font-semibold">Sign In</a>
                     </div>
                   )}
                   {currentUser && (
@@ -179,23 +173,14 @@ const Index = () => {
                 <p className="text-muted-foreground text-lg leading-relaxed mb-8">Start modernizing your resolution pipeline with structured workflows, transparency, and analytics-driven improvement.</p>
                 {!currentUser ? (
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button onClick={() => { setAuthMode('signup'); setShowAuth(true); }} className="btn btn-primary px-10 py-5 text-base font-semibold shadow-glow">Create Free Account</button>
-                    <button onClick={() => { setAuthMode('login'); setShowAuth(true); }} className="btn btn-outline px-10 py-5 text-base font-semibold">Sign In</button>
+                    <a href="/signup" className="btn btn-primary px-10 py-5 text-base font-semibold shadow-glow">Create Free Account</a>
+                    <a href="/login" className="btn btn-outline px-10 py-5 text-base font-semibold">Sign In</a>
                   </div>
                 ) : (
                   <button onClick={() => navigate(isAdmin ? '/admin' : '/dashboard')} className="btn btn-primary px-10 py-5 text-base font-semibold shadow-glow">Open Dashboard</button>
                 )}
               </div>
             </section>
-
-      {/* Authentication Modal */}
-      {showAuth && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="card-professional w-full max-w-md p-0 overflow-hidden animate-scale-in">
-            <AuthForm initialMode={authMode} onSuccess={handleAuthSuccess} onCancel={() => setShowAuth(false)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
