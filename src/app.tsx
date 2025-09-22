@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import LoginPage from "./pages/Login"; // new combined login/signup page
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route 
               path="/dashboard" 
               element={
