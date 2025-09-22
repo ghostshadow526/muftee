@@ -24,4 +24,5 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const analytics = getAnalytics(app);
 
-export default app;
+// If you need backward compatibility:
+export const _analytics = analytics;
